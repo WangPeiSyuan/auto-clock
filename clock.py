@@ -75,8 +75,7 @@ def signin(session, partTimeId):
         'AttendWork': ''
     }
 
-    r = session.get('https://cis.ncu.edu.tw/HumanSys/student/stdSignIn/create?ParttimeUsuallyId='+partTimeId)
-
+    r = session.get('https://cis.ncu.edu.tw/HumanSys/student/stdSignIn')
     # Get token
     tree = html.fromstring(r.text)
     token = tree.xpath('//input[@name="_token"]/@value')
@@ -87,8 +86,6 @@ def signin(session, partTimeId):
     return
 
 def signout(session, partTimeId, attendWork):
-    r = session.get('https://cis.ncu.edu.tw/HumanSys/student/stdSignIn/create?ParttimeUsuallyId='+partTimeId)
-
     SignOut = {
         'functionName': 'doSign',
         'idNo': '',
@@ -97,9 +94,12 @@ def signout(session, partTimeId, attendWork):
     }
 
     # Get token and idNo
+    r = session.get('https://cis.ncu.edu.tw/HumanSys/student/stdSignIn')
     tree = html.fromstring(r.text)
     token = tree.xpath('//input[@name="_token"]/@value')
     SignOut.update({'_token': token[0]})
+    r = session.get('https://cis.ncu.edu.tw/HumanSys/student/stdSignIn/create?ParttimeUsuallyId='+partTimeId)
+    tree = html.fromstring(r.text)
     idNo = tree.xpath('//*[@id="idNo"]/@value')
     SignOut.update({'idNo': idNo[0]})
 
